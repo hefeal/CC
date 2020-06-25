@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DB>
+    
+        <type ID_TYPE="-10" V_NAME="Прочее" />
+        <type ID_TYPE="1" V_NAME="Продукты и товары для дома" />
+        <type ID_TYPE="2" V_NAME="Развлечения" />
+        <type ID_TYPE="3" V_NAME="Бытовая техника" />
+        <type ID_TYPE="4" V_NAME="Машина" />
+        <type ID_TYPE="5" V_NAME="Дом" />
+        <type ID_TYPE="6" V_NAME="Здоровье" />
+        <type ID_TYPE="7" V_NAME="Связь" />
+    
+        <subtype ID_TYPE="1" ID_SUBTYPE = "1" V_NAME="Продукты" />
+        <subtype ID_TYPE="1" ID_SUBTYPE = "2" V_NAME="Товары для дома" />
+        <subtype ID_TYPE="1" ID_SUBTYPE = "3" V_NAME="Алкоголь" />
+        <subtype ID_TYPE="2" ID_SUBTYPE = "4" V_NAME="Кино" />
+        <subtype ID_TYPE="2" ID_SUBTYPE = "5" V_NAME="Кафе" />
+        <subtype ID_TYPE="2" ID_SUBTYPE = "6" V_NAME="Театр" />
+        <subtype ID_TYPE="2" ID_SUBTYPE = "7" V_NAME="Выставки" />
+        <subtype ID_TYPE="2" ID_SUBTYPE = "8" V_NAME="Видео игры" />
+        <subtype ID_TYPE="2" ID_SUBTYPE = "22" V_NAME="Путешествия" />
+        <subtype ID_TYPE="4" ID_SUBTYPE = "9" V_NAME="Бензин" />
+        <subtype ID_TYPE="4" ID_SUBTYPE = "10" V_NAME="Обслуживание" />
+        <subtype ID_TYPE="4" ID_SUBTYPE = "11" V_NAME="Страховка" />
+        <subtype ID_TYPE="4" ID_SUBTYPE = "12" V_NAME="Кредит" />
+        <subtype ID_TYPE="5" ID_SUBTYPE = "13" V_NAME="Плата ЖКХ" />
+        <subtype ID_TYPE="5" ID_SUBTYPE = "15" V_NAME="Кредит" />
+        <subtype ID_TYPE="6" ID_SUBTYPE = "17" V_NAME="Лекарства" />
+        <subtype ID_TYPE="6" ID_SUBTYPE = "18" V_NAME="Спортзал" />
+        <subtype ID_TYPE="7" ID_SUBTYPE = "19" V_NAME="Интернет" />
+        <subtype ID_TYPE="7" ID_SUBTYPE = "20" V_NAME="Моб. телефон" />
+        <subtype ID_TYPE="7" ID_SUBTYPE = "21" V_NAME="Дом. телефон" />
+    
+</DB>
