@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class AddCost extends AppCompatActivity {
@@ -257,7 +258,7 @@ public class AddCost extends AppCompatActivity {
 
     public void ChooseSum()
     {
-        value_field.setText(String.format("%.2f", edit_row.get(0).getF_sum()));
+        value_field.setText(String.format(Locale.ROOT,"%.2f", edit_row.get(0).getF_sum()));
     }
 
     public void ChooseComment()
