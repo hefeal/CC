@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import android.util.Log;
+import android.view.ViewDebug;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,6 +29,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String COSTS_ID_ITEM = "ID_ITEM";
     private static final String COSTS_F_SUM = "F_SUM";
     private static final String COSTS_V_COMMENT = "V_COMMENT";
+    private static final String COSTS_N_SMS_ID = "N_SMS_ID";
     private static final String TABLE_TYPES = "TYPES";
     private static final String TYPES_ID_TYPE = "ID_TYPE";
     private static final String TYPES_V_NAME = "V_NAME";
@@ -41,6 +43,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String ITEMS_V_NAME = "V_NAME";
     private static final String TABLE_INIT = "T_INIT";
     private static final String INIT_IS_INIT = "B_IS_INIT";
+    private static final String TABLE_SMS_TEMPLATES = "SMS_TEMPLATES";
+    private static final String SMS_TEMPLATES_ID_SMS_TEMP = "ID_SMS_TEMP";
+    private static final String SMS_TEMPLATES_V_PHONE_NUM = "V_PHONE_NUM";
+    private static final String SMS_TEMPLATES_V_STR_BEFORE_SUM = "V_STR_BEFORE_SUM";
+    private static final String SMS_TEMPLATES_V_STR_AFTER_SUM = "V_STR_AFTER_SUM";
+    private static final String SMS_TEMPLATES_V_TEMP_NAME = "V_TEMP_NAME";
 
     private final Context contxt;
     public DatabaseHandler(Context context){
@@ -52,6 +60,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //this.this_db = db;
         db.execSQL("PRAGMA foreign_keys = ON;");
+
 
         String CREATE_INIT_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_INIT + "("
                 + INIT_IS_INIT + " INTEGER )";
@@ -88,14 +97,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + COSTS_ID_ITEM + " INTEGER,"
                 + COSTS_F_SUM + " REAL,"
                 + COSTS_V_COMMENT + " TEXT,"
+                + COSTS_N_SMS_ID + " INTEGER,"
                 + "FOREIGN KEY (" + COSTS_ID_TYPE + ") REFERENCES " + TABLE_TYPES + "(" + TYPES_ID_TYPE + "),"
                 + "FOREIGN KEY (" + COSTS_ID_SUBTYPE + ") REFERENCES " + TABLE_SUBTYPES + "(" + SUBTYPES_ID_SUBTYPE + "),"
                 + "FOREIGN KEY (" + COSTS_ID_ITEM + ") REFERENCES " + TABLE_ITEMS + "(" + ITEMS_ID_ITEM + ")"
                 + ")";
         db.execSQL(CREATE_COSTS_TABLE);
 
-    }
+        String CREATE_SMS = "CREATE TABLE IF NOT EXISTS " + TABLE_SMS_TEMPLATES + "("
+                + SMS_TEMPLATES_ID_SMS_TEMP + " INTEGER PRIMARY KEY,"
+                + SMS_TEMPLATES_V_PHONE_NUM + " TEXT,"
+                + SMS_TEMPLATES_V_STR_BEFORE_SUM + " TEXT,"
+                + SMS_TEMPLATES_V_STR_AFTER_SUM + " TEXT,"
+                + SMS_TEMPLATES_V_TEMP_NAME + " TEXT"
+                + ")";
+        Log.d("dbhandler", CREATE_SMS);
+        db.execSQL(CREATE_SMS);
 
+
+
+    }
 
 
     @Override
@@ -115,6 +136,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(COSTS_ID_ITEM, row.getId_item());
         values.put(COSTS_F_SUM, row.getF_sum());
         values.put(COSTS_V_COMMENT, row.getV_comment());
+        values.put(COSTS_N_SMS_ID,row.getN_sms_id());
         db.insert(TABLE_COSTS, null, values);
         //db.close();
     }
@@ -180,6 +202,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // db.close();
     }
 
+    public void InsertTableSmsTemp (TableSmsTempRow row) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SMS_TEMPLATES_V_PHONE_NUM, row.getV_phone_num());
+        values.put(SMS_TEMPLATES_V_STR_AFTER_SUM, row.getV_str_after_sum());
+        values.put(SMS_TEMPLATES_V_STR_BEFORE_SUM, row.getV_str_before_sum());
+        values.put(SMS_TEMPLATES_V_TEMP_NAME, row.getV_temp_name());
+        db.insert(TABLE_SMS_TEMPLATES, null, values);
+        // db.close();
+    }
     ////////////UPDATE SECTION/////////////
 
 
@@ -224,6 +256,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // db.close();
     }
 
+    public void UpdateTableSmsTemp (TableSmsTempRow row) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(SMS_TEMPLATES_V_PHONE_NUM, row.getV_phone_num());
+        values.put(SMS_TEMPLATES_V_STR_AFTER_SUM, row.getV_str_after_sum());
+        values.put(SMS_TEMPLATES_V_STR_BEFORE_SUM, row.getV_str_before_sum());
+        values.put(SMS_TEMPLATES_V_TEMP_NAME, row.getV_temp_name());
+        db.update(TABLE_SMS_TEMPLATES, values, SMS_TEMPLATES_ID_SMS_TEMP+"=?", new String[]{String.valueOf(row.getId_sms_temp())});
+        // db.close();
+    }
+
     ////////////DELETE SECTION/////////////
 
     public void DeletTableCosts(Integer id_row){
@@ -255,6 +298,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void DeletTableItems(Integer id_row){
         SQLiteDatabase db=this.getWritableDatabase();
         db.delete(TABLE_ITEMS, ITEMS_ID_ITEM+"=?", new String[]{String.valueOf(id_row)});
+        //db.close();
+    }
+
+    public void DeletTableSmsTemp(Integer id_row){
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.delete(TABLE_SMS_TEMPLATES, SMS_TEMPLATES_ID_SMS_TEMP+"=?", new String[]{String.valueOf(id_row)});
         //db.close();
     }
 
@@ -340,6 +389,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     row.setV_date(null);
                 else
                     row.setV_date(String.valueOf(cursor.getString(cursor.getColumnIndex(COSTS_DT_DATE))));
+
+                if (cursor.getColumnIndex(COSTS_N_SMS_ID) == -1  || cursor.isNull(cursor.getColumnIndex(COSTS_N_SMS_ID)))
+                    row.setN_sms_id(null);
+                else
+                    row.setN_sms_id(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_N_SMS_ID))));
 
                 if (cursor.getColumnIndex("V_TYPE_NAME") == -1)
                     row.setV_type_name(null);
@@ -490,9 +544,85 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return  list_items;
     }
 
+    public List<TableSmsTempRow> SelectTableSmsTemp(String predict ) {
+        List<TableSmsTempRow> list_items = new ArrayList<>();
+
+        //building sql query
+        String where;
+
+        if (predict == null)
+            where = "";
+        else
+        {
+            where = " where " + predict;
+        }
+
+        String query = "select * from " + TABLE_SMS_TEMPLATES + where;
+        //Log.d("dbhandler","items query:" + query);
+        SQLiteDatabase db=this.getWritableDatabase();
+        Cursor cursor=db.rawQuery(query, null);
+
+        //fetch cursor to TableCostsRow
+        if(cursor.moveToFirst()){
+            do{
+                TableSmsTempRow row = new TableSmsTempRow();
+                if (cursor.getColumnIndex(SMS_TEMPLATES_ID_SMS_TEMP) == -1 || cursor.isNull(cursor.getColumnIndex(SMS_TEMPLATES_ID_SMS_TEMP)))
+                    row.setId_sms_temp(null);
+                else
+                    row.setId_sms_temp(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(SMS_TEMPLATES_ID_SMS_TEMP))));
+
+                if (cursor.getColumnIndex(SMS_TEMPLATES_V_PHONE_NUM) == -1)
+                    row.setV_phone_num(null);
+                else
+                    row.setV_phone_num(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_PHONE_NUM))));
+
+                if (cursor.getColumnIndex(SMS_TEMPLATES_V_STR_BEFORE_SUM) == -1)
+                    row.setV_str_before_sum(null);
+                else
+                    row.setV_str_before_sum(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_STR_BEFORE_SUM))));
+
+                if (cursor.getColumnIndex(SMS_TEMPLATES_V_STR_AFTER_SUM) == -1)
+                    row.setV_str_after_sum(null);
+                else
+                    row.setV_str_after_sum(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_STR_AFTER_SUM))));
+
+                if (cursor.getColumnIndex(SMS_TEMPLATES_V_TEMP_NAME) == -1)
+                    row.setV_temp_name(null);
+                else
+                    row.setV_temp_name(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_TEMP_NAME))));
+
+                list_items.add(row);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return  list_items;
+    }
+
+
+    /////////INIT SECTION/////////////
+
     void InitDbTables()
     {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        String CREATE_SMS = "CREATE TABLE IF NOT EXISTS " + TABLE_SMS_TEMPLATES + "("
+                + SMS_TEMPLATES_ID_SMS_TEMP + " INTEGER PRIMARY KEY,"
+                + SMS_TEMPLATES_V_PHONE_NUM + " TEXT,"
+                + SMS_TEMPLATES_V_STR_BEFORE_SUM + " TEXT,"
+                + SMS_TEMPLATES_V_STR_AFTER_SUM + " TEXT,"
+                + SMS_TEMPLATES_V_TEMP_NAME + " TEXT"
+                + ")";
+        Log.d("dbhandler", CREATE_SMS);
+        db.execSQL(CREATE_SMS);
+
+        //ALTER TABLES
+        Cursor cursor_a = db.rawQuery("SELECT * FROM " + TABLE_COSTS, null);
+        int deleteStateColumnIndex = cursor_a.getColumnIndex(COSTS_N_SMS_ID);
+        Log.d("db", String.valueOf(deleteStateColumnIndex));
+        if (deleteStateColumnIndex < 0) {
+            db.execSQL("ALTER TABLE " + TABLE_COSTS + " ADD COLUMN " + COSTS_N_SMS_ID + " INTEGER;");
+        }
+
         //if table T_INIT is empty then fill DB by default values (and fill T_INIT table)
         //else do nothing
         Cursor cursor=db.rawQuery("Select * from " + TABLE_INIT + ";", null);

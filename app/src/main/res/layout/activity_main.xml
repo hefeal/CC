@@ -51,4 +51,15 @@
         app:layout_constraintTop_toBottomOf="@+id/calendarView"
         android:onClick="OnClickDaysCosts"/>
 
+    <Button
+        android:id="@+id/button_id4"
+        android:layout_width="315dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/btn_open_sms"
+        android:onClick="OnClickSms"
+        app:layout_constraintStart_toStartOf="@+id/button_id3"
+        app:layout_constraintTop_toBottomOf="@+id/button_id3" />
+
+
 </android.support.constraint.ConstraintLayout>

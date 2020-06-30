@@ -65,4 +65,19 @@
     <string name="title_tables">Tables</string>
     <string name="title_charts">Charts</string>
     <string name="title_compare_charts">Compare charts</string>
+    <string name="btn_open_sms">SMS Parser</string>
+    <string name="title_sms">SMS Parser</string>
+    <string name="btn_date_from">Date From:</string>
+    <string name="btn_date_to">Date To:</string>
+    <string name="txt_phone">Enter phone number</string>
+    <string name="txt_before">Enter phrase before cost value</string>
+    <string name="txt_after">Enter phrase after cost value</string>
+    <string name="txt_status_saved">Saved</string>
+    <string name="txt_status_unsaved">Not Saved</string>
+    <string name="title_sms_templates">Templates for parsing</string>
+    <string name="btn_start_parsing">Start sms parsing</string>
+    <string name="btn_add_temp">Create empty template</string>
+    <string name="title_sms_complite">Parsing complited!</string>
+    <string name="txt_total_sms">Total sms parse:</string>
+    <string name="txt_success_sms">Success sms parse:</string>
 </resources>

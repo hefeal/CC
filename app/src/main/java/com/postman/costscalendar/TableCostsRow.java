@@ -120,4 +120,14 @@ public class TableCostsRow {
     }
 
     private  String v_item_name;
+
+    public Integer getN_sms_id() {
+        return n_sms_id;
+    }
+
+    public void setN_sms_id(Integer n_sms_id) {
+        this.n_sms_id = n_sms_id;
+    }
+
+    private Integer n_sms_id;
 }
