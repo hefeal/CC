@@ -1,4 +1,4 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,7 +12,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import android.util.Log;
-import android.view.ViewDebug;
+
+import com.postman.costscalendar.R;
+import com.postman.costscalendar.dto.TableCostsRow;
+import com.postman.costscalendar.dto.TableItemsRow;
+import com.postman.costscalendar.dto.TableSmsTemplateRow;
+import com.postman.costscalendar.dto.TableSubtypesRow;
+import com.postman.costscalendar.dto.TableTypesRow;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -58,7 +64,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //this.this_db = db;
+
         db.execSQL("PRAGMA foreign_keys = ON;");
 
 
@@ -121,8 +127,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    //    db.execSQL("DROP TABLE IF EXISTS " + TABLE_COSTS);
-    //    onCreate(db);
+
     }
 
     ////////////INSERT SECTION/////////////
@@ -130,13 +135,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void InsertTableCosts(TableCostsRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(COSTS_DT_DATE, row.getV_date());
-        values.put(COSTS_ID_TYPE, row.getId_type());
-        values.put(COSTS_ID_SUBTYPE, row.getId_subtype());
-        values.put(COSTS_ID_ITEM, row.getId_item());
-        values.put(COSTS_F_SUM, row.getF_sum());
-        values.put(COSTS_V_COMMENT, row.getV_comment());
-        values.put(COSTS_N_SMS_ID,row.getN_sms_id());
+        values.put(COSTS_DT_DATE, row.getStringDate());
+        values.put(COSTS_ID_TYPE, row.getIdType());
+        values.put(COSTS_ID_SUBTYPE, row.getIdSubtype());
+        values.put(COSTS_ID_ITEM, row.getIdItem());
+        values.put(COSTS_F_SUM, row.getCostSum());
+        values.put(COSTS_V_COMMENT, row.getCostComment());
+        values.put(COSTS_N_SMS_ID,row.getSmsId());
         db.insert(TABLE_COSTS, null, values);
         //db.close();
     }
@@ -144,8 +149,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void InsertTableTypes(TableTypesRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(TYPES_ID_TYPE, row.getId_type());
-        values.put(TYPES_V_NAME, row.getV_name());
+        values.put(TYPES_ID_TYPE, row.getTypeId());
+        values.put(TYPES_V_NAME, row.getTypeName());
         db.insert(TABLE_TYPES, null, values);
        // db.close();
     }
@@ -153,8 +158,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public long InsertTableTypesGetId(TableTypesRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(TYPES_ID_TYPE, row.getId_type());
-        values.put(TYPES_V_NAME, row.getV_name());
+        values.put(TYPES_ID_TYPE, row.getTypeId());
+        values.put(TYPES_V_NAME, row.getTypeName());
         long id = db.insert(TABLE_TYPES, null, values);
         return id;
         // db.close();
@@ -163,9 +168,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void InsertTableSubtypes(TableSubtypesRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(SUBTYPES_ID_SUBTYPE, row.getId_subtype());
-        values.put(SUBTYPES_ID_TYPE, row.getId_type());
-        values.put(SUBTYPES_V_NAME, row.getV_name());
+        values.put(SUBTYPES_ID_SUBTYPE, row.getSubtypeId());
+        values.put(SUBTYPES_ID_TYPE, row.getTypeId());
+        values.put(SUBTYPES_V_NAME, row.getSubTypeName());
         db.insert(TABLE_SUBTYPES, null, values);
        // db.close();
     }
@@ -173,9 +178,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public long InsertTableSubtypesGetId(TableSubtypesRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(SUBTYPES_ID_SUBTYPE, row.getId_subtype());
-        values.put(SUBTYPES_ID_TYPE, row.getId_type());
-        values.put(SUBTYPES_V_NAME, row.getV_name());
+        values.put(SUBTYPES_ID_SUBTYPE, row.getSubtypeId());
+        values.put(SUBTYPES_ID_TYPE, row.getTypeId());
+        values.put(SUBTYPES_V_NAME, row.getSubTypeName());
         long id = db.insert(TABLE_SUBTYPES, null, values);
         return id;
         // db.close();
@@ -184,9 +189,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void InsertTableItems(TableItemsRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(ITEMS_ID_SUBTYPE, row.getId_subtype());
-        values.put(ITEMS_ID_ITEM, row.getId_item());
-        values.put(ITEMS_V_NAME, row.getV_name());
+        values.put(ITEMS_ID_SUBTYPE, row.getSubtypeId());
+        values.put(ITEMS_ID_ITEM, row.getItemId());
+        values.put(ITEMS_V_NAME, row.getNameId());
         db.insert(TABLE_ITEMS, null, values);
         // db.close();
     }
@@ -194,21 +199,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public long InsertTableItemsGetId(TableItemsRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(ITEMS_ID_SUBTYPE, row.getId_subtype());
-        values.put(ITEMS_ID_ITEM, row.getId_item());
-        values.put(ITEMS_V_NAME, row.getV_name());
+        values.put(ITEMS_ID_SUBTYPE, row.getSubtypeId());
+        values.put(ITEMS_ID_ITEM, row.getItemId());
+        values.put(ITEMS_V_NAME, row.getNameId());
         long id = db.insert(TABLE_ITEMS, null, values);
         return id;
         // db.close();
     }
 
-    public void InsertTableSmsTemp (TableSmsTempRow row) {
+    public void InsertTableSmsTemp (TableSmsTemplateRow row) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(SMS_TEMPLATES_V_PHONE_NUM, row.getV_phone_num());
-        values.put(SMS_TEMPLATES_V_STR_AFTER_SUM, row.getV_str_after_sum());
-        values.put(SMS_TEMPLATES_V_STR_BEFORE_SUM, row.getV_str_before_sum());
-        values.put(SMS_TEMPLATES_V_TEMP_NAME, row.getV_temp_name());
+        values.put(SMS_TEMPLATES_V_PHONE_NUM, row.getPhoneNumber());
+        values.put(SMS_TEMPLATES_V_STR_AFTER_SUM, row.getStringAfterSum());
+        values.put(SMS_TEMPLATES_V_STR_BEFORE_SUM, row.getStringBeforeSum());
+        values.put(SMS_TEMPLATES_V_TEMP_NAME, row.getTemplateName());
         db.insert(TABLE_SMS_TEMPLATES, null, values);
         // db.close();
     }
@@ -218,52 +223,52 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void UpdateTableCosts(TableCostsRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(COSTS_DT_DATE, row.getV_date());
-        values.put(COSTS_ID_TYPE, row.getId_type());
-        values.put(COSTS_ID_SUBTYPE, row.getId_subtype());
-        values.put(COSTS_ID_ITEM, row.getId_item());
-        values.put(COSTS_F_SUM, row.getF_sum());
-        values.put(COSTS_V_COMMENT, row.getV_comment());
-        db.update(TABLE_COSTS, values, COSTS_ID_COST+"=?", new String[]{String.valueOf(row.getId_cost())});
+        values.put(COSTS_DT_DATE, row.getStringDate());
+        values.put(COSTS_ID_TYPE, row.getIdType());
+        values.put(COSTS_ID_SUBTYPE, row.getIdSubtype());
+        values.put(COSTS_ID_ITEM, row.getIdItem());
+        values.put(COSTS_F_SUM, row.getCostSum());
+        values.put(COSTS_V_COMMENT, row.getCostComment());
+        db.update(TABLE_COSTS, values, COSTS_ID_COST+"=?", new String[]{String.valueOf(row.getIdCost())});
         //db.close();
     }
 
     public void UpdateTableTypes(TableTypesRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(TYPES_ID_TYPE, row.getId_type());
-        values.put(TYPES_V_NAME, row.getV_name());
-        db.update(TABLE_TYPES, values, TYPES_ID_TYPE+"=?", new String[]{String.valueOf(row.getId_type())});
+        values.put(TYPES_ID_TYPE, row.getTypeId());
+        values.put(TYPES_V_NAME, row.getTypeName());
+        db.update(TABLE_TYPES, values, TYPES_ID_TYPE+"=?", new String[]{String.valueOf(row.getTypeId())});
         // db.close();
     }
 
     public void UpdateTableSubypes(TableSubtypesRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(SUBTYPES_ID_SUBTYPE, row.getId_subtype());
-        values.put(SUBTYPES_ID_TYPE, row.getId_type());
-        values.put(SUBTYPES_V_NAME, row.getV_name());
-        db.update(TABLE_SUBTYPES, values, SUBTYPES_ID_SUBTYPE+"=?", new String[]{String.valueOf(row.getId_subtype())});
+        values.put(SUBTYPES_ID_SUBTYPE, row.getSubtypeId());
+        values.put(SUBTYPES_ID_TYPE, row.getTypeId());
+        values.put(SUBTYPES_V_NAME, row.getSubTypeName());
+        db.update(TABLE_SUBTYPES, values, SUBTYPES_ID_SUBTYPE+"=?", new String[]{String.valueOf(row.getSubtypeId())});
         // db.close();
     }
     public void UpdateTableItems(TableItemsRow row){
         SQLiteDatabase db=this.getWritableDatabase();
         ContentValues values=new ContentValues();
-        values.put(ITEMS_ID_SUBTYPE, row.getId_subtype());
-        values.put(ITEMS_ID_ITEM, row.getId_item());
-        values.put(ITEMS_V_NAME, row.getV_name());
-        db.update(TABLE_ITEMS, values, ITEMS_ID_ITEM+"=?", new String[]{String.valueOf(row.getId_item())});
+        values.put(ITEMS_ID_SUBTYPE, row.getSubtypeId());
+        values.put(ITEMS_ID_ITEM, row.getItemId());
+        values.put(ITEMS_V_NAME, row.getNameId());
+        db.update(TABLE_ITEMS, values, ITEMS_ID_ITEM+"=?", new String[]{String.valueOf(row.getItemId())});
         // db.close();
     }
 
-    public void UpdateTableSmsTemp (TableSmsTempRow row) {
+    public void UpdateTableSmsTemp (TableSmsTemplateRow row) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(SMS_TEMPLATES_V_PHONE_NUM, row.getV_phone_num());
-        values.put(SMS_TEMPLATES_V_STR_AFTER_SUM, row.getV_str_after_sum());
-        values.put(SMS_TEMPLATES_V_STR_BEFORE_SUM, row.getV_str_before_sum());
-        values.put(SMS_TEMPLATES_V_TEMP_NAME, row.getV_temp_name());
-        db.update(TABLE_SMS_TEMPLATES, values, SMS_TEMPLATES_ID_SMS_TEMP+"=?", new String[]{String.valueOf(row.getId_sms_temp())});
+        values.put(SMS_TEMPLATES_V_PHONE_NUM, row.getPhoneNumber());
+        values.put(SMS_TEMPLATES_V_STR_AFTER_SUM, row.getStringAfterSum());
+        values.put(SMS_TEMPLATES_V_STR_BEFORE_SUM, row.getStringBeforeSum());
+        values.put(SMS_TEMPLATES_V_TEMP_NAME, row.getTemplateName());
+        db.update(TABLE_SMS_TEMPLATES, values, SMS_TEMPLATES_ID_SMS_TEMP+"=?", new String[]{String.valueOf(row.getSmsTempId())});
         // db.close();
     }
 
@@ -277,10 +282,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public void DeletTableTypes(Integer id_row){
         SQLiteDatabase db=this.getWritableDatabase();
-        List<TableSubtypesRow> sb_rows = SelectTableSubtype(SUBTYPES_ID_TYPE + "=" + String.valueOf(id_row));
-        for (int i=0; i < sb_rows.size();i++)
+        List<TableSubtypesRow> subtypesRows = SelectTableSubtype(SUBTYPES_ID_TYPE + "=" + String.valueOf(id_row));
+        for (int i=0; i < subtypesRows.size();i++)
         {
-            db.delete(TABLE_ITEMS, ITEMS_ID_SUBTYPE+"=?", new String[]{String.valueOf(sb_rows.get(i).getId_subtype())});
+            db.delete(TABLE_ITEMS, ITEMS_ID_SUBTYPE+"=?", new String[]{String.valueOf(subtypesRows.get(i).getSubtypeId())});
         }
         db.delete(TABLE_SUBTYPES, SUBTYPES_ID_TYPE+"=?", new String[]{String.valueOf(id_row)});
         db.delete(TABLE_TYPES, TYPES_ID_TYPE+"=?", new String[]{String.valueOf(id_row)});
@@ -310,13 +315,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     ////////////SELECT SECTION/////////////
 
     public List<TableCostsRow> SelectTableCosts(String predict, String group, String group_select ){
-        List<TableCostsRow> list_costs  = new ArrayList<>();
+        List<TableCostsRow> tableCostsRows  = new ArrayList<>();
 
         //building sql query
         String where;
-        String group_by;
+        String groupBy;
         String select;
-        String order_by;
+        String orderBy;
 
         if (predict == null)
             where = "";
@@ -327,16 +332,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         if (group == null)
         {
-            group_by = "";
+            groupBy = "";
             select = "c.*, t.v_name as V_TYPE_NAME, st.v_name as V_SUBTYPE_NAME, it.v_name as V_ITEM_NAME";
-            order_by = " order by id_cost desc ";
+            orderBy = " order by id_cost desc ";
         }
 
         else
         {
-            group_by = "group by " + group;
+            groupBy = "group by " + group;
             select = "sum(" + COSTS_F_SUM + ") as " + COSTS_F_SUM + ", " + group_select;
-            order_by = "";
+            orderBy = "";
         }
 
         //final query
@@ -345,8 +350,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                      + " left join " + TABLE_SUBTYPES + " st on st.id_subtype = c.id_subtype "
                      + " left join " + TABLE_ITEMS + " it on it.id_item = c.id_item "
                      + where + " "
-                     + group_by
-                     + order_by;
+                     + groupBy
+                     + orderBy;
         Log.d("db_handler",query);
         SQLiteDatabase db=this.getWritableDatabase();
         Cursor cursor=db.rawQuery(query, null);
@@ -356,69 +361,69 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do{
                 TableCostsRow row=new TableCostsRow();
                 if (cursor.getColumnIndex(COSTS_ID_COST) == -1 || cursor.isNull(cursor.getColumnIndex(COSTS_ID_COST)))
-                    row.setId_cost(null);
+                    row.setIdCost(null);
                 else
-                    row.setId_cost(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_COST))));
+                    row.setIdCost(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_COST))));
 
                 if (cursor.getColumnIndex(COSTS_ID_TYPE) == -1 || cursor.isNull(cursor.getColumnIndex(COSTS_ID_TYPE)))
-                    row.setId_type(null);
+                    row.setIdType(null);
                 else
-                    row.setId_type(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_TYPE))));
+                    row.setIdType(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_TYPE))));
 
                 if (cursor.getColumnIndex(COSTS_ID_SUBTYPE) == -1  || cursor.isNull(cursor.getColumnIndex(COSTS_ID_SUBTYPE)))
-                    row.setId_subtype(null);
+                    row.setIdSubtype(null);
                 else
-                    row.setId_subtype(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_SUBTYPE))));
+                    row.setIdSubtype(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_SUBTYPE))));
 
                 if (cursor.getColumnIndex(COSTS_F_SUM) == -1  || cursor.isNull(cursor.getColumnIndex(COSTS_F_SUM)))
-                    row.setF_sum(0);
+                    row.setCostSum(0);
                 else
-                    row.setF_sum(Float.valueOf(cursor.getFloat(cursor.getColumnIndex(COSTS_F_SUM))));
+                    row.setCostSum(Float.valueOf(cursor.getFloat(cursor.getColumnIndex(COSTS_F_SUM))));
 
                 if (cursor.getColumnIndex(COSTS_ID_ITEM) == -1  || cursor.isNull(cursor.getColumnIndex(COSTS_ID_ITEM)))
-                    row.setId_item(null);
+                    row.setIdItem(null);
                 else
-                    row.setId_item(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_ITEM))));
+                    row.setIdItem(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_ID_ITEM))));
 
                 if (cursor.getColumnIndex(COSTS_V_COMMENT) == -1)
-                    row.setV_comment(null);
+                    row.setCostComment(null);
                 else
-                    row.setV_comment(String.valueOf(cursor.getString(cursor.getColumnIndex(COSTS_V_COMMENT))));
+                    row.setCostComment(String.valueOf(cursor.getString(cursor.getColumnIndex(COSTS_V_COMMENT))));
 
                 if (cursor.getColumnIndex(COSTS_DT_DATE) == -1)
-                    row.setV_date(null);
+                    row.setStringDate(null);
                 else
-                    row.setV_date(String.valueOf(cursor.getString(cursor.getColumnIndex(COSTS_DT_DATE))));
+                    row.setStringDate(String.valueOf(cursor.getString(cursor.getColumnIndex(COSTS_DT_DATE))));
 
                 if (cursor.getColumnIndex(COSTS_N_SMS_ID) == -1  || cursor.isNull(cursor.getColumnIndex(COSTS_N_SMS_ID)))
-                    row.setN_sms_id(null);
+                    row.setSmsId(null);
                 else
-                    row.setN_sms_id(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_N_SMS_ID))));
+                    row.setSmsId(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(COSTS_N_SMS_ID))));
 
                 if (cursor.getColumnIndex("V_TYPE_NAME") == -1)
-                    row.setV_type_name(null);
+                    row.setTypeName(null);
                 else
-                    row.setV_type_name(String.valueOf(cursor.getString(cursor.getColumnIndex("V_TYPE_NAME"))));
+                    row.setTypeName(String.valueOf(cursor.getString(cursor.getColumnIndex("V_TYPE_NAME"))));
 
                 if (cursor.getColumnIndex("V_SUBTYPE_NAME") == -1)
-                    row.setV_subtype_name(null);
+                    row.setSubtypeName(null);
                 else
-                    row.setV_subtype_name(String.valueOf(cursor.getString(cursor.getColumnIndex("V_SUBTYPE_NAME"))));
+                    row.setSubtypeName(String.valueOf(cursor.getString(cursor.getColumnIndex("V_SUBTYPE_NAME"))));
 
                 if (cursor.getColumnIndex("V_ITEM_NAME") == -1)
-                    row.setV_item_name(null);
+                    row.setItemName(null);
                 else
-                    row.setV_item_name(String.valueOf(cursor.getString(cursor.getColumnIndex("V_ITEM_NAME"))));
+                    row.setItemName(String.valueOf(cursor.getString(cursor.getColumnIndex("V_ITEM_NAME"))));
 
-                list_costs.add(row);
+                tableCostsRows.add(row);
             }while(cursor.moveToNext());
         }
         cursor.close();
-        return list_costs;
+        return tableCostsRows;
     }
 
     public List<TableTypesRow> SelectTableTypes(String predict ) {
-        List<TableTypesRow> list_types = new ArrayList<>();
+        List<TableTypesRow> tableTypesRowList = new ArrayList<>();
 
         //building sql query
         String where;
@@ -440,24 +445,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do{
                 TableTypesRow row = new TableTypesRow();
                 if (cursor.getColumnIndex(TYPES_ID_TYPE) == -1 || cursor.isNull(cursor.getColumnIndex(TYPES_ID_TYPE)))
-                    row.setId_type(null);
+                    row.setTypeId(null);
                 else
-                    row.setId_type(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(TYPES_ID_TYPE))));
+                    row.setTypeId(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(TYPES_ID_TYPE))));
 
                 if (cursor.getColumnIndex(TYPES_V_NAME) == -1)
-                    row.setV_name(null);
+                    row.setTypeName(null);
                 else
-                    row.setV_name(String.valueOf(cursor.getString(cursor.getColumnIndex(TYPES_V_NAME))));
+                    row.setTypeName(String.valueOf(cursor.getString(cursor.getColumnIndex(TYPES_V_NAME))));
 
-                list_types.add(row);
+                tableTypesRowList.add(row);
             }while(cursor.moveToNext());
         }
         cursor.close();
-        return  list_types;
+        return  tableTypesRowList;
     }
 
     public List<TableSubtypesRow> SelectTableSubtype(String predict ) {
-        List<TableSubtypesRow> list_types = new ArrayList<>();
+        List<TableSubtypesRow> tableSubtypesRowList = new ArrayList<>();
 
         //building sql query
         String where;
@@ -479,29 +484,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do{
                 TableSubtypesRow row = new TableSubtypesRow();
                 if (cursor.getColumnIndex(SUBTYPES_ID_SUBTYPE) == -1 || cursor.isNull(cursor.getColumnIndex(SUBTYPES_ID_SUBTYPE)))
-                    row.setId_subtype(null);
+                    row.setSubtypeId(null);
                 else
-                    row.setId_subtype(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(SUBTYPES_ID_SUBTYPE))));
+                    row.setSubtypeId(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(SUBTYPES_ID_SUBTYPE))));
 
                 if (cursor.getColumnIndex(SUBTYPES_ID_TYPE) == -1 || cursor.isNull(cursor.getColumnIndex(SUBTYPES_ID_TYPE)))
-                    row.setId_type(null);
+                    row.setTypeId(null);
                 else
-                    row.setId_type(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(SUBTYPES_ID_TYPE))));
+                    row.setTypeId(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(SUBTYPES_ID_TYPE))));
 
                 if (cursor.getColumnIndex(SUBTYPES_V_NAME) == -1)
-                    row.setV_name(null);
+                    row.setSubTypeName(null);
                 else
-                    row.setV_name(String.valueOf(cursor.getString(cursor.getColumnIndex(SUBTYPES_V_NAME))));
+                    row.setSubTypeName(String.valueOf(cursor.getString(cursor.getColumnIndex(SUBTYPES_V_NAME))));
 
-                list_types.add(row);
+                tableSubtypesRowList.add(row);
             }while(cursor.moveToNext());
         }
         cursor.close();
-        return  list_types;
+        return  tableSubtypesRowList;
     }
 
     public List<TableItemsRow> SelectTableItems(String predict ) {
-        List<TableItemsRow> list_items = new ArrayList<>();
+        List<TableItemsRow> itemsRowList = new ArrayList<>();
 
         //building sql query
         String where;
@@ -523,29 +528,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             do{
                 TableItemsRow row = new TableItemsRow();
                 if (cursor.getColumnIndex(ITEMS_ID_SUBTYPE) == -1 || cursor.isNull(cursor.getColumnIndex(ITEMS_ID_SUBTYPE)))
-                    row.setId_subtype(null);
+                    row.setSubtypeId(null);
                 else
-                    row.setId_subtype(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(ITEMS_ID_SUBTYPE))));
+                    row.setSubtypeId(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(ITEMS_ID_SUBTYPE))));
 
                 if (cursor.getColumnIndex(ITEMS_ID_ITEM) == -1 || cursor.isNull(cursor.getColumnIndex(ITEMS_ID_ITEM)))
-                    row.setId_item(null);
+                    row.setItemId(null);
                 else
-                    row.setId_item(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(ITEMS_ID_ITEM))));
+                    row.setItemId(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(ITEMS_ID_ITEM))));
 
                 if (cursor.getColumnIndex(ITEMS_V_NAME) == -1)
-                    row.setV_name(null);
+                    row.setNameId(null);
                 else
-                    row.setV_name(String.valueOf(cursor.getString(cursor.getColumnIndex(ITEMS_V_NAME))));
+                    row.setNameId(String.valueOf(cursor.getString(cursor.getColumnIndex(ITEMS_V_NAME))));
 
-                list_items.add(row);
+                itemsRowList.add(row);
             }while(cursor.moveToNext());
         }
         cursor.close();
-        return  list_items;
+        return  itemsRowList;
     }
 
-    public List<TableSmsTempRow> SelectTableSmsTemp(String predict ) {
-        List<TableSmsTempRow> list_items = new ArrayList<>();
+    public List<TableSmsTemplateRow> SelectTableSmsTemp(String predict ) {
+        List<TableSmsTemplateRow> smsTemplateRowList = new ArrayList<>();
 
         //building sql query
         String where;
@@ -565,43 +570,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //fetch cursor to TableCostsRow
         if(cursor.moveToFirst()){
             do{
-                TableSmsTempRow row = new TableSmsTempRow();
+                TableSmsTemplateRow row = new TableSmsTemplateRow();
                 if (cursor.getColumnIndex(SMS_TEMPLATES_ID_SMS_TEMP) == -1 || cursor.isNull(cursor.getColumnIndex(SMS_TEMPLATES_ID_SMS_TEMP)))
-                    row.setId_sms_temp(null);
+                    row.setSmsTempId(null);
                 else
-                    row.setId_sms_temp(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(SMS_TEMPLATES_ID_SMS_TEMP))));
+                    row.setSmsTempId(Integer.valueOf(cursor.getInt(cursor.getColumnIndex(SMS_TEMPLATES_ID_SMS_TEMP))));
 
                 if (cursor.getColumnIndex(SMS_TEMPLATES_V_PHONE_NUM) == -1)
-                    row.setV_phone_num(null);
+                    row.setPhoneNumber(null);
                 else
-                    row.setV_phone_num(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_PHONE_NUM))));
+                    row.setPhoneNumber(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_PHONE_NUM))));
 
                 if (cursor.getColumnIndex(SMS_TEMPLATES_V_STR_BEFORE_SUM) == -1)
-                    row.setV_str_before_sum(null);
+                    row.setStringBeforeSum(null);
                 else
-                    row.setV_str_before_sum(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_STR_BEFORE_SUM))));
+                    row.setStringBeforeSum(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_STR_BEFORE_SUM))));
 
                 if (cursor.getColumnIndex(SMS_TEMPLATES_V_STR_AFTER_SUM) == -1)
-                    row.setV_str_after_sum(null);
+                    row.setStringAfterSum(null);
                 else
-                    row.setV_str_after_sum(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_STR_AFTER_SUM))));
+                    row.setStringAfterSum(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_STR_AFTER_SUM))));
 
                 if (cursor.getColumnIndex(SMS_TEMPLATES_V_TEMP_NAME) == -1)
-                    row.setV_temp_name(null);
+                    row.setTemplateName(null);
                 else
-                    row.setV_temp_name(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_TEMP_NAME))));
+                    row.setTemplateName(String.valueOf(cursor.getString(cursor.getColumnIndex(SMS_TEMPLATES_V_TEMP_NAME))));
 
-                list_items.add(row);
+                smsTemplateRowList.add(row);
             }while(cursor.moveToNext());
         }
         cursor.close();
-        return  list_items;
+        return  smsTemplateRowList;
     }
 
 
     /////////INIT SECTION/////////////
 
-    void InitDbTables()
+    public void InitDbTables()
     {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -616,8 +621,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_SMS);
 
         //ALTER TABLES
-        Cursor cursor_a = db.rawQuery("SELECT * FROM " + TABLE_COSTS, null);
-        int deleteStateColumnIndex = cursor_a.getColumnIndex(COSTS_N_SMS_ID);
+        Cursor cursorAlter = db.rawQuery("SELECT * FROM " + TABLE_COSTS, null);
+        int deleteStateColumnIndex = cursorAlter.getColumnIndex(COSTS_N_SMS_ID);
         Log.d("db", String.valueOf(deleteStateColumnIndex));
         if (deleteStateColumnIndex < 0) {
             db.execSQL("ALTER TABLE " + TABLE_COSTS + " ADD COLUMN " + COSTS_N_SMS_ID + " INTEGER;");
@@ -626,7 +631,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         //if table T_INIT is empty then fill DB by default values (and fill T_INIT table)
         //else do nothing
         Cursor cursor=db.rawQuery("Select * from " + TABLE_INIT + ";", null);
-        ContentValues value_init=new ContentValues();
+        ContentValues valueInit = new ContentValues();
         if(cursor!=null && cursor.getCount()>0)
         {
             Log.d("db_handler", "already init");
@@ -635,40 +640,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         else
         {
             Log.d("db_handler", "no rows in init table");
-            value_init.put(INIT_IS_INIT, 1);
-            db.insert(TABLE_INIT, null, value_init);
-            TableTypesRow t_row = new TableTypesRow();
-            TableSubtypesRow ts_row = new TableSubtypesRow();
+            valueInit.put(INIT_IS_INIT, 1);
+            db.insert(TABLE_INIT, null, valueInit);
+            TableTypesRow typesRow = new TableTypesRow();
+            TableSubtypesRow subtypesRow = new TableSubtypesRow();
 
             Resources res = contxt.getResources();
 
-            XmlPullParser xml_pars = res.getXml(R.xml.db_init_data);
+            XmlPullParser xmlPullParser = res.getXml(R.xml.db_init_data);
             try {
             int eventType = -1;
             while (eventType != XmlPullParser.END_DOCUMENT) {
                     // Ищем теги record
                 if ((eventType == XmlResourceParser.START_TAG)
-                            && (xml_pars.getName().equals("type"))) {
-                    String id = xml_pars.getAttributeValue(null,"ID_TYPE");
+                            && (xmlPullParser.getName().equals("type"))) {
+                    String id = xmlPullParser.getAttributeValue(null,"ID_TYPE");
 
-                        t_row.setId_type(Integer.parseInt(xml_pars.getAttributeValue(null,"ID_TYPE")));
-                        t_row.setV_name(xml_pars.getAttributeValue(null, "V_NAME"));
-                    Log.d("dbhandler", "id " + String.valueOf(t_row.getId_type()));
-                    Log.d("dbhandler", "name " + t_row.getV_name());
-                        InsertTableTypes(t_row);
+                        typesRow.setTypeId(Integer.parseInt(xmlPullParser.getAttributeValue(null,"ID_TYPE")));
+                        typesRow.setTypeName(xmlPullParser.getAttributeValue(null, "V_NAME"));
+                    Log.d("dbhandler", "id " + String.valueOf(typesRow.getTypeId()));
+                    Log.d("dbhandler", "name " + typesRow.getTypeName());
+                        InsertTableTypes(typesRow);
                 }
 
                 if ((eventType == XmlResourceParser.START_TAG)
-                        && (xml_pars.getName().equals("subtype"))) {
+                        && (xmlPullParser.getName().equals("subtype"))) {
 
-                    ts_row.setId_type(Integer.parseInt(xml_pars.getAttributeValue(null,"ID_TYPE")));
-                    ts_row.setId_subtype(Integer.parseInt(xml_pars.getAttributeValue(null, "ID_SUBTYPE")));
-                    ts_row.setV_name(xml_pars.getAttributeValue(null, "V_NAME"));
+                    subtypesRow.setTypeId(Integer.parseInt(xmlPullParser.getAttributeValue(null,"ID_TYPE")));
+                    subtypesRow.setSubtypeId(Integer.parseInt(xmlPullParser.getAttributeValue(null, "ID_SUBTYPE")));
+                    subtypesRow.setSubTypeName(xmlPullParser.getAttributeValue(null, "V_NAME"));
 
-                    InsertTableSubtypes(ts_row);
+                    InsertTableSubtypes(subtypesRow);
                 }
 
-                 eventType = xml_pars.next();
+                 eventType = xmlPullParser.next();
             }
             }
             // Catch errors
@@ -679,7 +684,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             } finally {
                 // Close the xml file
-                ((XmlResourceParser) xml_pars).close();
+                ((XmlResourceParser) xmlPullParser).close();
             }
 
         }

@@ -1,37 +1,37 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.model;
 
 public class CostPiece  {
-    int id_view;
-    boolean is_selected;
+    int viewId;
+    boolean isSelected;
 
     public CostPiece (int id, boolean is_sel) {
-        this.id_view = id;
-        this.is_selected = is_sel;
+        this.viewId = id;
+        this.isSelected = is_sel;
         }
-    public int getId_view() {
-        return id_view;
+    public int getViewId() {
+        return viewId;
     }
 
-    public void setId_view(int id_view) {
-        this.id_view = id_view;
+    public void setViewId(int viewId) {
+        this.viewId = viewId;
     }
 
 
 
-    public boolean getIs_selected() {
-        return is_selected;
+    public boolean getSelected() {
+        return isSelected;
     }
 
-    public void setIs_selected(boolean is_selected) {
-        this.is_selected = is_selected;
+    public void setSelected(boolean selected) {
+        this.isSelected = selected;
     }
 
     public void ChangeState()
     {
-        if (is_selected)
-            is_selected = false;
+        if (isSelected)
+            isSelected = false;
         else
-            is_selected = true;
+            isSelected = true;
     }
 
     public Integer getId_type() {

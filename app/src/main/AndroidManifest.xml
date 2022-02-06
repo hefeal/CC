@@ -10,17 +10,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SmsParser"></activity>
-        <activity android:name=".Reports" />
-        <activity android:name=".AddItem" />
-        <activity android:name=".AddSubtype" />
-        <activity android:name=".Dict" />
-        <activity android:name=".AddType" />
+        <activity android:name=".activity.SmsParser"></activity>
+        <activity android:name=".activity.Reports" />
+        <activity android:name=".service.AddItem" />
+        <activity android:name=".service.AddSubtype" />
+        <activity android:name=".activity.Dict" />
+        <activity android:name=".service.AddType" />
         <activity
-            android:name=".AddCost"
+            android:name=".service.AddCost"
             android:label="@string/title_activity_add_cost"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".DaysCosts" />
+        <activity android:name=".service.DaysCosts" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

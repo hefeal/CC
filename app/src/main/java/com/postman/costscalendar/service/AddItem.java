@@ -1,4 +1,4 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.service;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +16,14 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.postman.costscalendar.dao.DatabaseHandler;
+import com.postman.costscalendar.R;
+import com.postman.costscalendar.dto.TableCostsRow;
+import com.postman.costscalendar.dto.TableItemsRow;
+import com.postman.costscalendar.dto.TableSubtypesRow;
+import com.postman.costscalendar.dto.TableTypesRow;
+import com.postman.costscalendar.model.StringWithTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,17 +99,17 @@ public class AddItem extends AppCompatActivity {
         {
 
             final View view = lif.inflate(R.layout.item_piece, linLayout, false);
-            view.setId(items_list.get(i).getId_item());
+            view.setId(items_list.get(i).getItemId());
             linLayout.addView(view);
 
             TextView textView = view.findViewById(R.id.txt_item);
-            textView.setText(items_list.get(i).getV_name());
+            textView.setText(items_list.get(i).getNameId());
 
             Button btn_edit = view.findViewById(R.id.edititem);
             final TableItemsRow t_row = new TableItemsRow();
-            t_row.setId_item(items_list.get(i).getId_item());
-            t_row.setId_subtype(items_list.get(i).getId_subtype());
-            t_row.setV_name(items_list.get(i).getV_name());
+            t_row.setItemId(items_list.get(i).getItemId());
+            t_row.setSubtypeId(items_list.get(i).getSubtypeId());
+            t_row.setNameId(items_list.get(i).getNameId());
             btn_edit.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     OnClickEditItem(t_row);
@@ -125,8 +133,8 @@ public class AddItem extends AppCompatActivity {
         List<StringWithTag> item_list = new ArrayList<StringWithTag>();
 
         for (int i =0; i < type_list.size(); i++) {
-            Integer key = type_list.get(i).getId_type();
-            String value = type_list.get(i).getV_name();
+            Integer key = type_list.get(i).getTypeId();
+            String value = type_list.get(i).getTypeName();
 
             item_list.add(new StringWithTag(value, key));
         }
@@ -143,8 +151,8 @@ public class AddItem extends AppCompatActivity {
         List<StringWithTag> item_list = new ArrayList<StringWithTag>();
 
         for (int i =0; i < type_list.size(); i++) {
-            Integer key = type_list.get(i).getId_subtype();
-            String value = type_list.get(i).getV_name();
+            Integer key = type_list.get(i).getSubtypeId();
+            String value = type_list.get(i).getSubTypeName();
 
             item_list.add(new StringWithTag(value, key));
         }
@@ -186,8 +194,8 @@ public class AddItem extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     if (add_item_txt.getText().toString() != null) {
                         TableItemsRow row = new TableItemsRow();
-                        row.setV_name(add_item_txt.getText().toString());
-                        row.setId_subtype(choosen_subtype);
+                        row.setNameId(add_item_txt.getText().toString());
+                        row.setSubtypeId(choosen_subtype);
                         dbh.InsertTableItems(row);
                     }
                     DisplayItems();
@@ -207,7 +215,7 @@ public class AddItem extends AppCompatActivity {
     {
         AlertDialog.Builder dialog_add_type = new AlertDialog.Builder(this);
         final EditText add_item_txt = new EditText(this);
-        add_item_txt.setText(t_row.getV_name());
+        add_item_txt.setText(t_row.getNameId());
         dialog_add_type.setView(add_item_txt);
 
         dialog_add_type.setTitle(R.string.title_edit_item);
@@ -217,9 +225,9 @@ public class AddItem extends AppCompatActivity {
                 if (add_item_txt.getText().toString() != null)
                 {
                     TableItemsRow row = new TableItemsRow();
-                    row.setV_name(add_item_txt.getText().toString());
-                    row.setId_subtype(t_row.getId_subtype());
-                    row.setId_item(t_row.getId_item());
+                    row.setNameId(add_item_txt.getText().toString());
+                    row.setSubtypeId(t_row.getSubtypeId());
+                    row.setItemId(t_row.getItemId());
                     dbh.UpdateTableItems(row);
                 }
                 DisplayItems();
@@ -236,7 +244,7 @@ public class AddItem extends AppCompatActivity {
 
     public void OnClickDeleteItem(final TableItemsRow t_row)
     {
-        final List<TableCostsRow> tc_rows = dbh.SelectTableCosts("c.id_item = " + String.valueOf(t_row.getId_item()), null, null);
+        final List<TableCostsRow> tc_rows = dbh.SelectTableCosts("c.id_item = " + String.valueOf(t_row.getItemId()), null, null);
 
         AlertDialog.Builder dialog_add_type = new AlertDialog.Builder(this);
         FrameLayout container = new FrameLayout(this);
@@ -244,7 +252,7 @@ public class AddItem extends AppCompatActivity {
         params.leftMargin = getResources().getDimensionPixelSize(R.dimen.margin_20);
         params.rightMargin = getResources().getDimensionPixelSize(R.dimen.margin_20);
         params.topMargin = getResources().getDimensionPixelSize(R.dimen.margin_10);
-        dialog_add_type.setTitle(getString(R.string.dict_confirm01) + " " + t_row.getV_name()+ "?");
+        dialog_add_type.setTitle(getString(R.string.dict_confirm01) + " " + t_row.getNameId()+ "?");
         dialog_add_type.setView(container);
         dialog_add_type.setPositiveButton(R.string.btn_sure_delete, new DialogInterface.OnClickListener() {
             @Override
@@ -252,12 +260,12 @@ public class AddItem extends AppCompatActivity {
                 for (int i = 0; i < tc_rows.size(); i++)
                 {
                     TableCostsRow tc_row_v = tc_rows.get(i);
-                    tc_row_v.setId_item(null);
+                    tc_row_v.setIdItem(null);
                     dbh.UpdateTableCosts(tc_row_v);
                 }
 
 
-                dbh.DeletTableItems(t_row.getId_item());
+                dbh.DeletTableItems(t_row.getItemId());
                 DisplayItems();
             }
         });
