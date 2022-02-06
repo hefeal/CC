@@ -1,9 +1,14 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import com.postman.costscalendar.R;
+import com.postman.costscalendar.service.AddItem;
+import com.postman.costscalendar.service.AddSubtype;
+import com.postman.costscalendar.service.AddType;
 
 public class Dict extends AppCompatActivity {
 

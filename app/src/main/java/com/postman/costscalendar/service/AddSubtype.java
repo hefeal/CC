@@ -1,4 +1,4 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.service;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -16,6 +16,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.postman.costscalendar.dao.DatabaseHandler;
+import com.postman.costscalendar.R;
+import com.postman.costscalendar.dto.TableCostsRow;
+import com.postman.costscalendar.dto.TableItemsRow;
+import com.postman.costscalendar.dto.TableSubtypesRow;
+import com.postman.costscalendar.dto.TableTypesRow;
+import com.postman.costscalendar.model.StringWithTag;
+import com.postman.costscalendar.model.SubtypePiece;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,18 +78,18 @@ public class AddSubtype extends AppCompatActivity {
             Log.d("addsubtype", "cycle run " + String.valueOf(i) + " of list size " + String.valueOf(subtypes_list.size()));
 
             final View view = lif.inflate(R.layout.subtype_piece, linLayout, false);
-            view.setId(subtypes_list.get(i).getId_subtype());
+            view.setId(subtypes_list.get(i).getSubtypeId());
             linLayout.addView(view);
             pieces_list.add(new SubtypePiece(view.getId(),false));
 
             TextView textView = view.findViewById(R.id.txt_subtype);
-            textView.setText(subtypes_list.get(i).getV_name());
+            textView.setText(subtypes_list.get(i).getSubTypeName());
 
             Button btn_edit = view.findViewById(R.id.editsubtype);
             final TableSubtypesRow t_row = new TableSubtypesRow();
-            t_row.setId_type(subtypes_list.get(i).getId_type());
-            t_row.setId_subtype(subtypes_list.get(i).getId_subtype());
-            t_row.setV_name(subtypes_list.get(i).getV_name());
+            t_row.setTypeId(subtypes_list.get(i).getTypeId());
+            t_row.setSubtypeId(subtypes_list.get(i).getSubtypeId());
+            t_row.setSubTypeName(subtypes_list.get(i).getSubTypeName());
             btn_edit.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     OnClickEditSubType(t_row);
@@ -104,8 +113,8 @@ public class AddSubtype extends AppCompatActivity {
         List<StringWithTag> item_list = new ArrayList<StringWithTag>();
 
         for (int i =0; i < type_list.size(); i++) {
-            Integer key = type_list.get(i).getId_type();
-            String value = type_list.get(i).getV_name();
+            Integer key = type_list.get(i).getTypeId();
+            String value = type_list.get(i).getTypeName();
 
             item_list.add(new StringWithTag(value, key));
         }
@@ -129,8 +138,8 @@ public class AddSubtype extends AppCompatActivity {
                 if (add_subtype_txt.getText().toString() != null)
                 {
                     TableSubtypesRow row = new TableSubtypesRow();
-                    row.setV_name(add_subtype_txt.getText().toString());
-                    row.setId_type(choosen_type);
+                    row.setSubTypeName(add_subtype_txt.getText().toString());
+                    row.setTypeId(choosen_type);
                     dbh.InsertTableSubtypes(row);
                 }
                 Recreate();
@@ -149,7 +158,7 @@ public class AddSubtype extends AppCompatActivity {
     {
         AlertDialog.Builder dialog_add_type = new AlertDialog.Builder(this);
         final EditText add_subtype_txt = new EditText(this);
-        add_subtype_txt.setText(t_row.getV_name());
+        add_subtype_txt.setText(t_row.getSubTypeName());
         dialog_add_type.setView(add_subtype_txt);
 
         dialog_add_type.setTitle(R.string.title_edit_subtype);
@@ -159,9 +168,9 @@ public class AddSubtype extends AppCompatActivity {
                 if (add_subtype_txt.getText().toString() != null)
                 {
                     TableSubtypesRow row = new TableSubtypesRow();
-                    row.setV_name(add_subtype_txt.getText().toString());
-                    row.setId_type(t_row.getId_type());
-                    row.setId_subtype(t_row.getId_subtype());
+                    row.setSubTypeName(add_subtype_txt.getText().toString());
+                    row.setTypeId(t_row.getTypeId());
+                    row.setSubtypeId(t_row.getSubtypeId());
                     dbh.UpdateTableSubypes(row);
                 }
                 Recreate();
@@ -178,8 +187,8 @@ public class AddSubtype extends AppCompatActivity {
 
     public void OnClickDeleteSubType(final TableSubtypesRow t_row)
     {
-        final List<TableCostsRow> tc_rows = dbh.SelectTableCosts("c.id_subtype = " + String.valueOf(t_row.getId_subtype()), null, null);
-        final List<TableItemsRow> ti_rows = dbh.SelectTableItems("id_subtype = " + String.valueOf(t_row.getId_subtype()));
+        final List<TableCostsRow> tc_rows = dbh.SelectTableCosts("c.id_subtype = " + String.valueOf(t_row.getSubtypeId()), null, null);
+        final List<TableItemsRow> ti_rows = dbh.SelectTableItems("id_subtype = " + String.valueOf(t_row.getSubtypeId()));
         String str02;
         String str05 = "";
         String str06;
@@ -193,7 +202,7 @@ public class AddSubtype extends AppCompatActivity {
         }
         else
         {
-            str02 = getString(R.string.dict_confirm02) + " " + t_row.getV_name() + ":\n";
+            str02 = getString(R.string.dict_confirm02) + " " + t_row.getSubTypeName() + ":\n";
             str06 = getString(R.string.dict_confirm06);
         }
         String title_str = str02 + str05 + str06;
@@ -208,7 +217,7 @@ public class AddSubtype extends AppCompatActivity {
         txt_v.setLayoutParams(params);
         container.addView(txt_v);
         txt_v.setText(title_str);
-        dialog_add_type.setTitle(getString(R.string.dict_confirm01) + " " + t_row.getV_name()+ "?");
+        dialog_add_type.setTitle(getString(R.string.dict_confirm01) + " " + t_row.getSubTypeName()+ "?");
         dialog_add_type.setView(container);
         dialog_add_type.setPositiveButton(R.string.btn_sure_delete, new DialogInterface.OnClickListener() {
             @Override
@@ -216,17 +225,17 @@ public class AddSubtype extends AppCompatActivity {
                 for (int i = 0; i < tc_rows.size(); i++)
                 {
                     TableCostsRow tc_row_v = tc_rows.get(i);
-                    tc_row_v.setId_subtype(null);
-                    tc_row_v.setId_item(null);
+                    tc_row_v.setIdSubtype(null);
+                    tc_row_v.setIdItem(null);
                     dbh.UpdateTableCosts(tc_row_v);
                 }
 
                 for (int i = 0; i < ti_rows.size(); i++)
                 {
-                    dbh.DeletTableItems(ti_rows.get(i).getId_item());
+                    dbh.DeletTableItems(ti_rows.get(i).getItemId());
                 }
 
-                dbh.DeletTableSubtypes(t_row.getId_subtype());
+                dbh.DeletTableSubtypes(t_row.getSubtypeId());
 
                 Recreate();
             }

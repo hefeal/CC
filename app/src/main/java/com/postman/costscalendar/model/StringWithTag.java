@@ -1,4 +1,4 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.model;
 
 public class StringWithTag {
     public String string;

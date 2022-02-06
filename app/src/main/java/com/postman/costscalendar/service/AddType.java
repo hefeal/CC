@@ -1,4 +1,4 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.service;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -12,6 +12,14 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.postman.costscalendar.dao.DatabaseHandler;
+import com.postman.costscalendar.R;
+import com.postman.costscalendar.dto.TableCostsRow;
+import com.postman.costscalendar.dto.TableItemsRow;
+import com.postman.costscalendar.dto.TableSubtypesRow;
+import com.postman.costscalendar.dto.TableTypesRow;
+import com.postman.costscalendar.model.TypePiece;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,17 +44,17 @@ public class AddType extends AppCompatActivity {
             LayoutInflater lif = getLayoutInflater();
             LinearLayout linLayout = (LinearLayout) findViewById(R.id.linelay_main);
             final View view = lif.inflate(R.layout.type_piece, linLayout, false);
-            view.setId(types_list.get(i).getId_type());
+            view.setId(types_list.get(i).getTypeId());
             linLayout.addView(view);
             pieces_list.add(new TypePiece(view.getId(),false));
 
             TextView textView = view.findViewById(R.id.txt_type);
-            textView.setText(types_list.get(i).getV_name());
+            textView.setText(types_list.get(i).getTypeName());
 
             Button btn_edit = view.findViewById(R.id.edittype);
             final TableTypesRow t_row = new TableTypesRow();
-            t_row.setId_type(types_list.get(i).getId_type());
-            t_row.setV_name(types_list.get(i).getV_name());
+            t_row.setTypeId(types_list.get(i).getTypeId());
+            t_row.setTypeName(types_list.get(i).getTypeName());
             btn_edit.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View view) {
                     OnClickEditType(t_row);
@@ -76,7 +84,7 @@ public class AddType extends AppCompatActivity {
                 if (add_type_txt.getText().toString() != null)
                 {
                     TableTypesRow row = new TableTypesRow();
-                    row.setV_name(add_type_txt.getText().toString());
+                    row.setTypeName(add_type_txt.getText().toString());
                     dbh.InsertTableTypes(row);
                 }
                 recreate();
@@ -95,7 +103,7 @@ public class AddType extends AppCompatActivity {
     {
         AlertDialog.Builder dialog_add_type = new AlertDialog.Builder(this);
         final EditText add_type_txt = new EditText(this);
-        add_type_txt.setText(t_row.getV_name());
+        add_type_txt.setText(t_row.getTypeName());
         dialog_add_type.setView(add_type_txt);
 
         dialog_add_type.setTitle(R.string.title_edit_type);
@@ -105,8 +113,8 @@ public class AddType extends AppCompatActivity {
                 if (add_type_txt.getText().toString() != null)
                 {
                     TableTypesRow row = new TableTypesRow();
-                    row.setV_name(add_type_txt.getText().toString());
-                    row.setId_type(t_row.getId_type());
+                    row.setTypeName(add_type_txt.getText().toString());
+                    row.setTypeId(t_row.getTypeId());
                     dbh.UpdateTableTypes(row);
                 }
                 recreate();
@@ -123,16 +131,16 @@ public class AddType extends AppCompatActivity {
 
     public void OnClickDeleteType(final TableTypesRow t_row)
     {
-        final List<TableCostsRow> tc_rows = dbh.SelectTableCosts("c.id_type = " + String.valueOf(t_row.getId_type()), null, null);
-        final List<TableSubtypesRow> ts_rows =  dbh.SelectTableSubtype("id_type = " +  String.valueOf(t_row.getId_type()));
+        final List<TableCostsRow> tc_rows = dbh.SelectTableCosts("c.id_type = " + String.valueOf(t_row.getTypeId()), null, null);
+        final List<TableSubtypesRow> ts_rows =  dbh.SelectTableSubtype("id_type = " +  String.valueOf(t_row.getTypeId()));
         String subtype_in = "(";
 
         for (int i =0; i < ts_rows.size();i++)
         {
             if (i < ts_rows.size() -1)
-                subtype_in = subtype_in + String.valueOf(ts_rows.get(i).getId_subtype()) + ",";
+                subtype_in = subtype_in + String.valueOf(ts_rows.get(i).getSubtypeId()) + ",";
             else
-                subtype_in = subtype_in + String.valueOf(ts_rows.get(i).getId_subtype()) + ")";
+                subtype_in = subtype_in + String.valueOf(ts_rows.get(i).getSubtypeId()) + ")";
         }
         String item_pred;
         if (subtype_in == "(")
@@ -159,7 +167,7 @@ public class AddType extends AppCompatActivity {
         }
         else
         {
-            str02 = getString(R.string.dict_confirm02) + " " + t_row.getV_name() + ":\n";
+            str02 = getString(R.string.dict_confirm02) + " " + t_row.getTypeName() + ":\n";
             str06 = getString(R.string.dict_confirm06);
         }
         String title_str = str02 + str03 + str04 + str05 + str06;
@@ -174,27 +182,27 @@ public class AddType extends AppCompatActivity {
         txt_v.setLayoutParams(params);
         container.addView(txt_v);
         txt_v.setText(title_str);
-        dialog_add_type.setTitle(getString(R.string.dict_confirm01) + " " + t_row.getV_name()+ "?");
+        dialog_add_type.setTitle(getString(R.string.dict_confirm01) + " " + t_row.getTypeName()+ "?");
         dialog_add_type.setView(container);
         dialog_add_type.setPositiveButton(R.string.btn_sure_delete, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 for (int i = 0; i < tc_rows.size(); i++)
                 {
-                    dbh.DeletTableCosts(tc_rows.get(i).getId_cost());
+                    dbh.DeletTableCosts(tc_rows.get(i).getIdCost());
                 }
 
                 for (int i = 0; i < ti_rows.size(); i++)
                 {
-                    dbh.DeletTableItems(ti_rows.get(i).getId_item());
+                    dbh.DeletTableItems(ti_rows.get(i).getItemId());
                 }
 
                 for (int i = 0; i < ts_rows.size(); i++)
                 {
-                    dbh.DeletTableSubtypes(ts_rows.get(i).getId_subtype());
+                    dbh.DeletTableSubtypes(ts_rows.get(i).getSubtypeId());
                 }
 
-                dbh.DeletTableTypes(t_row.getId_type());
+                dbh.DeletTableTypes(t_row.getTypeId());
                 recreate();
             }
         });
