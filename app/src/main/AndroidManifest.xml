@@ -12,16 +12,16 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.SmsParser"></activity>
         <activity android:name=".activity.Reports" />
-        <activity android:name=".service.AddItem" />
-        <activity android:name=".service.AddSubtype" />
+        <activity android:name=".activity.AddItem" />
+        <activity android:name=".activity.AddSubtype" />
         <activity android:name=".activity.Dict" />
-        <activity android:name=".service.AddType" />
+        <activity android:name=".activity.AddType" />
         <activity
-            android:name=".service.AddCost"
+            android:name=".activity.AddCost"
             android:label="@string/title_activity_add_cost"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".service.DaysCosts" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.DaysCosts" />
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

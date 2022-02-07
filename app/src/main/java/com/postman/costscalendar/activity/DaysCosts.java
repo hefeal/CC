@@ -1,4 +1,4 @@
-package com.postman.costscalendar.service;
+package com.postman.costscalendar.activity;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -21,7 +21,7 @@ import com.postman.costscalendar.R;
 import com.postman.costscalendar.dao.DatabaseHandler;
 import com.postman.costscalendar.dto.TableCostsRow;
 import com.postman.costscalendar.model.CostPiece;
-import com.postman.costscalendar.service.AddCost;
+import com.postman.costscalendar.activity.AddCost;
 
 public class DaysCosts extends AppCompatActivity {
     String stringDate;
