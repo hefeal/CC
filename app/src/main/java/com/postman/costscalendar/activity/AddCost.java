@@ -1,4 +1,4 @@
-package com.postman.costscalendar.service;
+package com.postman.costscalendar.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;

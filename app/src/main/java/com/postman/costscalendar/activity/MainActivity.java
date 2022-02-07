@@ -1,4 +1,4 @@
-package com.postman.costscalendar;
+package com.postman.costscalendar.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -11,11 +11,8 @@ import android.view.View;
 import android.content.Intent;
 import android.widget.CalendarView;
 
-import com.postman.costscalendar.activity.Dict;
-import com.postman.costscalendar.activity.Reports;
-import com.postman.costscalendar.activity.SmsParser;
+import com.postman.costscalendar.R;
 import com.postman.costscalendar.dao.DatabaseHandler;
-import com.postman.costscalendar.service.DaysCosts;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
